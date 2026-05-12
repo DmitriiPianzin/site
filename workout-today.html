@@ -1,0 +1,1912 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренировка на сегодня</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141716;
+    --surface2: #1c1f1d;
+    --border: #252928;
+    --accent: #39ff14;
+    --accent2: #ff7500;
+    --text: #e8ede9;
+    --text2: #7a8a7c;
+    --text3: #4a574b;
+    --danger: #ff4545;
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(57,255,20,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(255,117,0,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 48px 0 32px;
+    text-align: center;
+  }
+
+  .logo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px 6px 10px;
+    margin-bottom: 24px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text2);
+  }
+
+  .logo-badge span.dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 12vw, 88px);
+    line-height: 0.92;
+    letter-spacing: 0.02em;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+    text-shadow: 0 0 40px rgba(57,255,20,0.4);
+  }
+
+  .header-sub {
+    color: var(--text2);
+    font-size: 15px;
+    font-weight: 400;
+    max-width: 360px;
+    margin: 0 auto;
+    line-height: 1.6;
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(57,255,20,0.3), transparent);
+  }
+
+  .card-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── FEELING SLIDER ── */
+  .feeling-display {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .feeling-number {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px;
+    line-height: 1;
+    color: var(--accent);
+    text-shadow: 0 0 30px rgba(57,255,20,0.5);
+    transition: color 0.3s, text-shadow 0.3s;
+    min-width: 64px;
+  }
+
+  .feeling-label-wrap {
+    padding-bottom: 8px;
+  }
+
+  .feeling-label {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    transition: color 0.3s;
+  }
+
+  .feeling-desc {
+    font-size: 13px;
+    color: var(--text2);
+    margin-top: 2px;
+  }
+
+  .feeling-scale {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+
+  .feeling-scale-bar {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .feeling-scale-bar.active {
+    background: var(--accent);
+    box-shadow: 0 0 6px rgba(57,255,20,0.6);
+  }
+
+  .feeling-scale-bar.low-active {
+    background: var(--danger);
+    box-shadow: 0 0 6px rgba(255,69,69,0.6);
+  }
+
+  .feeling-scale-bar.mid-active {
+    background: var(--accent2);
+    box-shadow: 0 0 6px rgba(255,117,0,0.6);
+  }
+
+  input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(57,255,20,0.7), 0 0 0 3px rgba(57,255,20,0.15);
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 20px rgba(57,255,20,0.9), 0 0 0 5px rgba(57,255,20,0.2);
+  }
+
+  .range-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* ── TIME BUTTONS ── */
+  .time-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .time-btn {
+    flex: 1;
+    min-width: 60px;
+    padding: 12px 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+
+  .time-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .time-btn.active {
+    background: rgba(57,255,20,0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 0 0 12px rgba(57,255,20,0.15);
+  }
+
+  .time-btn span {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  .time-btn.active span { color: rgba(57,255,20,0.6); }
+
+  /* ── CHECKBOXES ── */
+  .options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .option-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .option-check:hover { border-color: var(--text3); }
+
+  .option-check input { display: none; }
+
+  .check-box {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--text3);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+
+  .option-check input:checked ~ .check-box {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .check-box svg { display: none; }
+  .option-check input:checked ~ .check-box svg { display: block; }
+
+  .check-text {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    line-height: 1.3;
+  }
+
+  .option-check:has(input:checked) .check-text { color: var(--text); }
+  .option-check:has(input:checked) { border-color: rgba(57,255,20,0.3); }
+
+  /* ── MUSCLE SELECTOR ── */
+  .muscle-selector-intro {
+    font-size: 13px;
+    color: var(--text2);
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .body-map-wrap {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .body-svg-col {
+    flex-shrink: 0;
+    width: 110px;
+    position: relative;
+  }
+
+  .body-svg-col svg {
+    width: 100%;
+    height: auto;
+  }
+
+  /* SVG muscle zones */
+  .body-zone {
+    cursor: pointer;
+    transition: opacity 0.2s;
+    opacity: 0.35;
+  }
+
+  .body-zone:hover { opacity: 0.7; }
+  .body-zone.zone-active { opacity: 1; }
+
+  .muscle-groups-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .muscle-group-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .muscle-group-row::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    transform: scaleY(0);
+    transition: transform 0.2s;
+    border-radius: 3px 0 0 3px;
+  }
+
+  .muscle-group-row:hover { border-color: var(--text3); }
+
+  .muscle-group-row.mg-active {
+    background: rgba(57,255,20,0.07);
+    border-color: rgba(57,255,20,0.4);
+    box-shadow: 0 0 12px rgba(57,255,20,0.08);
+  }
+
+  .muscle-group-row.mg-active::before { transform: scaleY(1); }
+
+  .mg-icon { font-size: 20px; flex-shrink: 0; width: 26px; text-align: center; }
+
+  .mg-info { flex: 1; }
+
+  .mg-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1px;
+  }
+
+  .mg-sub {
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .mg-check {
+    width: 18px; height: 18px;
+    border: 1.5px solid var(--text3);
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    font-size: 11px;
+  }
+
+  .muscle-group-row.mg-active .mg-check {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0a0f0a;
+    font-weight: 700;
+  }
+
+  .mg-clear-btn {
+    font-size: 12px;
+    color: var(--text3);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.2s;
+    float: right;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .mg-clear-btn:hover { color: var(--text2); }
+
+  .mg-hint {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 10px;
+    text-align: center;
+    font-style: italic;
+  }
+
+  @media (max-width: 500px) {
+    .body-map-wrap { flex-direction: column; align-items: center; }
+    .body-svg-col { width: 80px; }
+  }
+
+  /* ── CTA BUTTON ── */
+  .cta-wrap {
+    margin-top: 8px;
+  }
+
+  .cta-btn {
+    width: 100%;
+    padding: 18px 24px;
+    background: var(--accent);
+    color: #0a0f0a;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255,255,255,0.15) 0%, transparent 100%);
+  }
+
+  .cta-btn:hover {
+    background: #55ff30;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(57,255,20,0.4);
+  }
+
+  .cta-btn:active { transform: translateY(0); }
+
+  /* ── RESULT CARD ── */
+  #result-section {
+    display: none;
+    animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+
+  .result-header {
+    background: linear-gradient(135deg, #131f13 0%, #0d150d 100%);
+    padding: 28px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .result-header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at top left, rgba(57,255,20,0.08) 0%, transparent 70%);
+  }
+
+  .result-tag {
+    display: inline-block;
+    background: rgba(57,255,20,0.15);
+    color: var(--accent);
+    border: 1px solid rgba(57,255,20,0.3);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .result-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(32px, 8vw, 48px);
+    line-height: 1;
+    color: var(--text);
+    position: relative;
+    margin-bottom: 16px;
+  }
+
+  .result-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .meta-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text2);
+  }
+
+  .meta-chip .icon { font-size: 14px; }
+
+  .result-body {
+    padding: 24px 28px;
+  }
+
+  .result-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 14px;
+    margin-top: 24px;
+  }
+
+  .result-section-title:first-child { margin-top: 0; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 4px;
+  }
+
+  .stat-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  .stat-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 500;
+  }
+
+  .muscles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .muscle-tag {
+    background: rgba(255,117,0,0.1);
+    border: 1px solid rgba(255,117,0,0.25);
+    color: var(--accent2);
+    border-radius: 100px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  /* Exercises */
+  .exercises-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .exercise-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    transition: border-color 0.2s;
+  }
+
+  .exercise-item:hover { border-color: var(--accent); }
+
+  .exercise-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    color: var(--text3);
+    min-width: 24px;
+    text-align: center;
+  }
+
+  .exercise-info { flex: 1; }
+
+  .exercise-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .exercise-detail {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .exercise-icon {
+    font-size: 20px;
+    opacity: 0.6;
+  }
+
+  /* Tip */
+  .tip-box {
+    background: rgba(255,117,0,0.07);
+    border: 1px solid rgba(255,117,0,0.2);
+    border-radius: var(--radius-sm);
+    padding: 16px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .tip-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+
+  .tip-text {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .tip-text strong { color: var(--accent2); }
+
+  /* Difficulty bar */
+  .difficulty-wrap { margin-top: 8px; }
+
+  .diff-bar-bg {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border);
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+
+  .diff-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    box-shadow: 0 0 10px rgba(57,255,20,0.4);
+    transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .diff-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  /* ── HISTORY ── */
+  #history-section {
+    margin-top: 8px;
+    padding-bottom: 60px;
+  }
+
+  .history-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 0.04em;
+    color: var(--text2);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .history-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .history-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .history-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 14px 18px;
+  }
+
+  .history-date {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 600;
+    min-width: 54px;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  .history-sep {
+    width: 1px;
+    height: 36px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .history-info { flex: 1; }
+
+  .history-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .history-meta {
+    font-size: 12px;
+    color: var(--text2);
+  }
+
+  .history-badge {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+  }
+
+  .history-empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--text3);
+    font-size: 14px;
+    background: var(--surface);
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 500px) {
+    .card { padding: 20px; }
+    .result-header { padding: 20px; }
+    .result-body { padding: 18px 20px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .options-grid { grid-template-columns: 1fr; }
+    header { padding: 32px 0 24px; }
+  }
+
+  /* Scroll hint */
+  .scroll-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text3);
+    margin: 16px 0 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(4px); }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-badge">
+      <span class="dot"></span>
+      Умный тренер
+    </div>
+    <h1>ТРЕНИРОВКА<br><em>НА СЕГОДНЯ</em></h1>
+    <p class="header-sub">Расскажи, как ты себя чувствуешь — подберём идеальный комплекс именно для тебя прямо сейчас.</p>
+  </header>
+
+  <!-- FEELING -->
+  <div class="card">
+    <div class="card-label">Самочувствие</div>
+
+    <div class="feeling-display">
+      <div class="feeling-number" id="feeling-num">7</div>
+      <div class="feeling-label-wrap">
+        <div class="feeling-label" id="feeling-label">Хорошее</div>
+        <div class="feeling-desc" id="feeling-desc">Готов к нормальной нагрузке</div>
+      </div>
+    </div>
+
+    <div class="feeling-scale" id="feeling-scale">
+      <!-- bars inserted by JS -->
+    </div>
+
+    <input type="range" id="feeling-slider" min="1" max="10" value="7">
+    <div class="range-labels">
+      <span>😵 Ужасное</span>
+      <span>🔥 Отличное</span>
+    </div>
+  </div>
+
+  <!-- TIME -->
+  <div class="card">
+    <div class="card-label">Свободное время</div>
+    <div class="time-buttons" id="time-buttons">
+      <button class="time-btn" data-minutes="10">10<span>мин</span></button>
+      <button class="time-btn active" data-minutes="15">15<span>мин</span></button>
+      <button class="time-btn" data-minutes="20">20<span>мин</span></button>
+      <button class="time-btn" data-minutes="30">30<span>мин</span></button>
+      <button class="time-btn" data-minutes="60">1<span>час</span></button>
+    </div>
+  </div>
+
+  <!-- OPTIONS -->
+  <div class="card">
+    <div class="card-label">Ограничения и условия</div>
+    <div class="options-grid">
+      <label class="option-check">
+        <input type="checkbox" id="opt-back">
+        <div class="check-box">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#0a0f0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="check-text">Болит спина или шея</div>
+      </label>
+      <label class="option-check">
+        <input type="checkbox" id="opt-knee">
+        <div class="check-box">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#0a0f0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="check-text">Болит колено или нога</div>
+      </label>
+      <label class="option-check">
+        <input type="checkbox" id="opt-noequip" checked>
+        <div class="check-box">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#0a0f0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="check-text">Без инвентаря</div>
+      </label>
+      <label class="option-check">
+        <input type="checkbox" id="opt-equip">
+        <div class="check-box">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#0a0f0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="check-text">С инвентарём (гантели, резинка)</div>
+      </label>
+      <label class="option-check">
+        <input type="checkbox" id="opt-morning">
+        <div class="check-box">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#0a0f0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="check-text">Только утренняя разминка</div>
+      </label>
+      <label class="option-check">
+        <input type="checkbox" id="opt-cardio">
+        <div class="check-box">
+          <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+            <path d="M1 4l2.5 2.5L9 1" stroke="#0a0f0a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="check-text">Упор на кардио</div>
+      </label>
+    </div>
+  </div>
+
+  <!-- MUSCLE GROUPS -->
+  <div class="card">
+    <div class="card-label" style="margin-bottom:12px;">
+      Целевые мышцы
+      <button class="mg-clear-btn" id="mg-clear-btn">сбросить</button>
+    </div>
+    <div class="muscle-selector-intro">Выбери одну или несколько групп — тренировка будет составлена с упором на них. Если ничего не выбрано, подбираем сбалансированный комплекс.</div>
+
+    <div class="body-map-wrap">
+      <!-- SVG body silhouette with clickable zones -->
+      <div class="body-svg-col">
+        <svg viewBox="0 0 110 280" xmlns="http://www.w3.org/2000/svg" id="body-svg">
+          <!-- Head -->
+          <ellipse cx="55" cy="22" rx="16" ry="19" fill="#2a3a2a" stroke="#3a4a3a" stroke-width="1.5"/>
+          <!-- Neck -->
+          <rect x="48" y="39" width="14" height="10" rx="4" fill="#2a3a2a" stroke="#3a4a3a" stroke-width="1"/>
+          <!-- Chest / shoulders -->
+          <path class="body-zone" id="zone-chest" data-group="chest" d="M22 52 Q55 46 88 52 L90 90 Q55 95 20 90 Z" fill="#39ff14" stroke="none"/>
+          <!-- Shoulders -->
+          <ellipse class="body-zone" id="zone-shoulders" data-group="shoulders" cx="17" cy="65" rx="12" ry="16" fill="#39ff14" stroke="none"/>
+          <ellipse class="body-zone" id="zone-shoulders2" data-group="shoulders" cx="93" cy="65" rx="12" ry="16" fill="#39ff14" stroke="none"/>
+          <!-- Biceps / arms -->
+          <rect class="body-zone" id="zone-arms" data-group="arms" x="4" y="80" width="16" height="38" rx="8" fill="#39ff14" stroke="none"/>
+          <rect class="body-zone" id="zone-arms2" data-group="arms" x="90" y="80" width="16" height="38" rx="8" fill="#39ff14" stroke="none"/>
+          <!-- Forearms -->
+          <rect x="5" y="116" width="14" height="32" rx="7" fill="#2a3a2a" stroke="#3a4a3a" stroke-width="1"/>
+          <rect x="91" y="116" width="14" height="32" rx="7" fill="#2a3a2a" stroke="#3a4a3a" stroke-width="1"/>
+          <!-- Abs / core -->
+          <path class="body-zone" id="zone-core" data-group="core" d="M22 90 Q55 95 88 90 L85 138 Q55 143 25 138 Z" fill="#39ff14" stroke="none"/>
+          <!-- Back (shown as side highlight) -->
+          <!-- Glutes -->
+          <path class="body-zone" id="zone-glutes" data-group="glutes" d="M26 138 Q55 133 84 138 L82 165 Q55 170 28 165 Z" fill="#39ff14" stroke="none"/>
+          <!-- Quads -->
+          <rect class="body-zone" id="zone-quads" data-group="legs" x="28" y="164" width="22" height="52" rx="10" fill="#39ff14" stroke="none"/>
+          <rect class="body-zone" id="zone-quads2" data-group="legs" x="60" y="164" width="22" height="52" rx="10" fill="#39ff14" stroke="none"/>
+          <!-- Calves -->
+          <rect class="body-zone" id="zone-calves" data-group="calves" x="30" y="218" width="18" height="42" rx="9" fill="#39ff14" stroke="none"/>
+          <rect class="body-zone" id="zone-calves2" data-group="calves" x="62" y="218" width="18" height="42" rx="9" fill="#39ff14" stroke="none"/>
+          <!-- Body outline -->
+          <path d="M22 52 Q55 46 88 52 L90 90 L88 90 L85 138 L82 165 L82 215 L80 260 L30 260 L28 215 L28 165 L25 138 L22 90 L20 90 Z" fill="none" stroke="#3a4a3a" stroke-width="1.5"/>
+        </svg>
+        <div class="mg-hint">нажми на тело</div>
+      </div>
+
+      <div class="muscle-groups-col" id="muscle-groups-list">
+        <div class="muscle-group-row" data-group="chest">
+          <div class="mg-icon">💪</div>
+          <div class="mg-info">
+            <div class="mg-name">Грудь</div>
+            <div class="mg-sub">Большая, малая грудная</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="back">
+          <div class="mg-icon">🏋️</div>
+          <div class="mg-info">
+            <div class="mg-name">Спина</div>
+            <div class="mg-sub">Широчайшие, трапеция</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="shoulders">
+          <div class="mg-icon">🔱</div>
+          <div class="mg-info">
+            <div class="mg-name">Плечи</div>
+            <div class="mg-sub">Дельтовидные, ротаторы</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="arms">
+          <div class="mg-icon">💪</div>
+          <div class="mg-info">
+            <div class="mg-name">Руки</div>
+            <div class="mg-sub">Бицепс, трицепс</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="core">
+          <div class="mg-icon">⚡</div>
+          <div class="mg-info">
+            <div class="mg-name">Пресс и кор</div>
+            <div class="mg-sub">Прямая, косые, глубокие</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="glutes">
+          <div class="mg-icon">🍑</div>
+          <div class="mg-info">
+            <div class="mg-name">Ягодицы</div>
+            <div class="mg-sub">Большая, средняя ягодичная</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="legs">
+          <div class="mg-icon">🦵</div>
+          <div class="mg-info">
+            <div class="mg-name">Ноги</div>
+            <div class="mg-sub">Квадрицепс, бицепс бедра</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+        <div class="muscle-group-row" data-group="calves">
+          <div class="mg-icon">🏃</div>
+          <div class="mg-info">
+            <div class="mg-name">Икры</div>
+            <div class="mg-sub">Икроножная, камбаловидная</div>
+          </div>
+          <div class="mg-check">✓</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="cta-btn" id="generate-btn">⚡ ПОДОБРАТЬ ТРЕНИРОВКУ</button>
+  </div>
+
+  <!-- RESULT -->
+  <div id="result-section" style="margin-top:16px;">
+    <div class="scroll-hint">▼ Твой комплекс готов</div>
+    <div class="result-card">
+      <div class="result-header">
+        <div class="result-tag" id="res-tag">Высокая интенсивность</div>
+        <div class="result-title" id="res-title">Турбо-заряд</div>
+        <div class="result-meta" id="res-meta"></div>
+      </div>
+      <div class="result-body">
+        <div class="result-section-title">Статистика</div>
+        <div class="stats-row">
+          <div class="stat-box">
+            <div class="stat-value" id="res-time">15</div>
+            <div class="stat-label">минут</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="res-pulse">140</div>
+            <div class="stat-label">уд/мин</div>
+          </div>
+          <div class="stat-box">
+            <div class="stat-value" id="res-diff">7</div>
+            <div class="stat-label">сложность</div>
+          </div>
+        </div>
+
+        <div class="difficulty-wrap">
+          <div class="diff-bar-bg">
+            <div class="diff-bar-fill" id="res-diff-bar" style="width:70%"></div>
+          </div>
+          <div class="diff-labels"><span>Легко</span><span>Тяжело</span></div>
+        </div>
+
+        <div class="result-section-title" style="margin-top:20px;">Работают мышцы</div>
+        <div class="muscles-list" id="res-muscles"></div>
+
+        <div class="result-section-title">Упражнения</div>
+        <div class="exercises-list" id="res-exercises"></div>
+
+        <div class="result-section-title">Совет тренера</div>
+        <div class="tip-box">
+          <div class="tip-icon">💡</div>
+          <div class="tip-text" id="res-tip"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HISTORY -->
+  <div id="history-section" style="margin-top:32px;">
+    <div class="history-title">История</div>
+    <div class="history-list" id="history-list"></div>
+  </div>
+
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────
+const FEELINGS = [
+  null,
+  { label: 'Ужасное',    desc: 'Лучше отдохнуть или растянуться',    color: '#ff4545' },
+  { label: 'Плохое',     desc: 'Минимальная мягкая нагрузка',         color: '#ff6545' },
+  { label: 'Слабое',     desc: 'Лёгкая активность для восстановления',color: '#ff8545' },
+  { label: 'Ниже нормы', desc: 'Умеренный темп, без перегрузки',      color: '#ffa545' },
+  { label: 'Среднее',    desc: 'Стандартная нагрузка допустима',      color: '#ffc545' },
+  { label: 'Нормальное', desc: 'Полноценная тренировка',              color: '#d4e535' },
+  { label: 'Хорошее',    desc: 'Готов к нормальной нагрузке',        color: '#39ff14' },
+  { label: 'Отличное',   desc: 'Можно добавить интенсивности',        color: '#39ff14' },
+  { label: 'Прекрасное', desc: 'Высокая нагрузка — самое то',         color: '#39ff14' },
+  { label: 'Идеальное',  desc: 'Сегодня — твой лучший день!',         color: '#39ff14' },
+];
+
+// Workout database keyed by [feelingBand][timeBand]
+// feelingBand: 'low'(1-3), 'mid'(4-6), 'high'(7-10)
+// timeBand: 5, 10, 15, 20, 30
+
+const WORKOUTS = {
+  low: {
+    5: {
+      tag: 'Восстановление', title: 'Лёгкое пробуждение',
+      muscles: ['Спина', 'Шея', 'Бёдра'],
+      exercises: [
+        { name: 'Медленные повороты шеи', detail: '5 кругов в каждую сторону', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Кошка-корова', detail: '10 повторений', icon: '🐱', noBack: true, noKnee: false },
+        { name: 'Растяжка сгибателей бедра', detail: '30 сек на ногу', icon: '🦵', noBack: false, noKnee: false },
+      ],
+      pulseRange: [60, 80], tip: 'Ты сообщил о низком самочувствии. Не нагружай организм — сегодня цель: мягко подвигаться и улучшить кровоток.'
+    },
+    10: {
+      tag: 'Восстановление', title: 'Мягкая разминка',
+      muscles: ['Позвоночник', 'Бёдра', 'Плечи'],
+      exercises: [
+        { name: 'Глубокое диафрагмальное дыхание', detail: '2 мин, 4 сек вдох / 6 сек выдох', icon: '🌬️', noBack: false, noKnee: false },
+        { name: 'Кошка-корова', detail: '12 повторений', icon: '🐱', noBack: true, noKnee: false },
+        { name: 'Боковые наклоны стоя', detail: '8 на каждую сторону', icon: '🧘', noBack: false, noKnee: false },
+        { name: 'Растяжка четырёхглавой мышцы', detail: '40 сек на ногу', icon: '🦵', noBack: false, noKnee: false },
+      ],
+      pulseRange: [65, 85], tip: 'При низком самочувствии растяжка лучше, чем силовая работа. Медленные движения помогут снять напряжение и зарядить энергией.'
+    },
+    15: {
+      tag: 'Восстановление', title: 'Релакс-комплекс',
+      muscles: ['Всё тело', 'Суставы', 'Дыхание'],
+      exercises: [
+        { name: 'Дыхательная гимнастика', detail: '3 мин, бокс-дыхание 4-4-4-4', icon: '🌬️', noBack: false, noKnee: false },
+        { name: 'Суставная разминка', detail: '2 мин: шея, плечи, запястья, бёдра', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Кошка-корова', detail: '15 повторений медленно', icon: '🐱', noBack: true, noKnee: false },
+        { name: 'Ходьба на месте с высоким коленом', detail: '2 мин, лёгкий темп', icon: '🚶', noBack: false, noKnee: true },
+        { name: 'Растяжка бедра лёжа', detail: '45 сек на сторону', icon: '🧘', noBack: false, noKnee: false },
+      ],
+      pulseRange: [65, 90], tip: 'Сегодня главное — не перегрузиться. Мягкие движения помогут телу восстановиться быстрее, чем полный отдых.'
+    },
+    20: {
+      tag: 'Восстановление', title: 'Полное восстановление',
+      muscles: ['Всё тело', 'Фасции', 'Дыхание'],
+      exercises: [
+        { name: 'Дыхательная гимнастика', detail: '5 мин', icon: '🌬️', noBack: false, noKnee: false },
+        { name: 'Суставная разминка', detail: '3 мин полный круг', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Кошка-корова', detail: '15 повторений', icon: '🐱', noBack: true, noKnee: false },
+        { name: 'Поза ребёнка', detail: '1 мин удержания', icon: '🧘', noBack: false, noKnee: false },
+        { name: 'Лёгкие скручивания лёжа', detail: '30 сек на сторону', icon: '🔄', noBack: true, noKnee: false },
+        { name: 'Ходьба на месте', detail: '5 мин, спокойный темп', icon: '🚶', noBack: false, noKnee: true },
+      ],
+      pulseRange: [60, 90], tip: 'Самочувствие низкое — выбери время для прогулки на свежем воздухе после этого комплекса. Это даст дополнительный импульс для восстановления.'
+    },
+    30: {
+      tag: 'Восстановление', title: 'Йога-восстановление',
+      muscles: ['Всё тело', 'Суставы', 'Дыхание', 'Нервная система'],
+      exercises: [
+        { name: 'Медитация и дыхание', detail: '7 мин', icon: '🧘', noBack: false, noKnee: false },
+        { name: 'Суставная гимнастика', detail: '5 мин полный комплекс', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Кошка-корова', detail: '20 повторений', icon: '🐱', noBack: true, noKnee: false },
+        { name: 'Растяжка бедра лёжа', detail: '1 мин на сторону', icon: '🦵', noBack: false, noKnee: false },
+        { name: 'Поза счастливого ребёнка', detail: '1 мин', icon: '🧘', noBack: false, noKnee: false },
+        { name: 'Лёгкие скручивания лёжа', detail: '1 мин на сторону', icon: '🔄', noBack: true, noKnee: false },
+        { name: 'Ходьба на месте', detail: '8 мин, расслабленно', icon: '🚶', noBack: false, noKnee: true },
+      ],
+      pulseRange: [60, 85], tip: 'При очень плохом самочувствии длинная мягкая сессия лучше, чем короткая интенсивная. Прислушивайся к телу и останавливайся при дискомфорте.'
+    },
+    60: {
+      tag: 'Глубокое восстановление', title: 'Час для себя',
+      muscles: ['Всё тело', 'Суставы', 'Нервная система', 'Дыхание'],
+      exercises: [
+        { name: 'Медитация и дыхание', detail: '10 мин, диафрагмальное дыхание', icon: '🧘', noBack: false, noKnee: false },
+        { name: 'Суставная гимнастика', detail: '8 мин полный круг от шеи до стоп', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Кошка-корова', detail: '25 повторений, очень медленно', icon: '🐱', noBack: true, noKnee: false },
+        { name: 'Поза ребёнка', detail: '2 мин удержания', icon: '🧘', noBack: false, noKnee: false },
+        { name: 'Растяжка бедра лёжа', detail: '2 мин на сторону', icon: '🦵', noBack: false, noKnee: false },
+        { name: 'Лёгкие скручивания лёжа', detail: '1.5 мин на сторону', icon: '🔄', noBack: true, noKnee: false },
+        { name: 'Ходьба на месте с дыханием', detail: '15 мин, очень расслабленно', icon: '🚶', noBack: false, noKnee: true },
+        { name: 'Шавасана / полное расслабление', detail: '10 мин', icon: '💤', noBack: false, noKnee: false },
+      ],
+      pulseRange: [55, 80], tip: 'Час восстановления при низком самочувствии — это инвестиция в завтрашний день. Не торопись, дай телу полностью восстановиться.'
+    },
+  },
+  mid: {
+    5: {
+      tag: 'Быстрый заряд', title: 'Экспресс-активация',
+      muscles: ['Ноги', 'Пресс', 'Плечи'],
+      exercises: [
+        { name: 'Прыжки на месте', detail: '30 сек', icon: '⬆️', noBack: false, noKnee: true },
+        { name: 'Отжимания от стены', detail: '15 повторений', icon: '💪', noBack: false, noKnee: false },
+        { name: 'Приседания', detail: '20 повторений', icon: '🦵', noBack: false, noKnee: true },
+      ],
+      pulseRange: [100, 130], tip: 'Короткая тренировка при среднем самочувствии — отличный способ взбодриться. Выполняй движения чётко, без рывков.'
+    },
+    10: {
+      tag: 'Умеренная нагрузка', title: 'Базовый круг',
+      muscles: ['Ноги', 'Спина', 'Грудь', 'Пресс'],
+      exercises: [
+        { name: 'Приседания', detail: '3×15', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Отжимания', detail: '3×10', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Планка', detail: '3×30 сек', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Горизонтальный бег', detail: '2×30 сек', icon: '🏃', noBack: true, noKnee: true },
+      ],
+      pulseRange: [110, 135], tip: 'Стандартный темп — твой лучший выбор сегодня. Между подходами отдыхай 20–30 секунд.'
+    },
+    15: {
+      tag: 'Умеренная нагрузка', title: 'Функциональный комплекс',
+      muscles: ['Ноги', 'Кор', 'Грудь', 'Плечи'],
+      exercises: [
+        { name: 'Приседания', detail: '3×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Отжимания', detail: '3×12', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Выпады', detail: '3×10 на ногу', icon: '🦶', noBack: false, noKnee: true },
+        { name: 'Планка на локтях', detail: '3×40 сек', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Скручивания', detail: '3×20', icon: '💫', noBack: true, noKnee: false },
+      ],
+      pulseRange: [115, 140], tip: 'Среднее самочувствие — значит, организм готов к стандартной нагрузке. Следи за дыханием: выдох на усилии.'
+    },
+    20: {
+      tag: 'Умеренная нагрузка', title: 'Силовая функция',
+      muscles: ['Всё тело', 'Кор', 'Ноги'],
+      exercises: [
+        { name: 'Разминка (суставная)', detail: '3 мин', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Приседания', detail: '3×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Отжимания', detail: '3×15', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Выпады с шагом', detail: '2×12 на ногу', icon: '🦶', noBack: false, noKnee: true },
+        { name: 'Планка', detail: '3×45 сек', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Подъём ног лёжа', detail: '3×15', icon: '💫', noBack: true, noKnee: false },
+      ],
+      pulseRange: [120, 145], tip: '20 минут при хорошем самочувствии — достаточно для ощутимого результата. Не отдыхай больше 40 секунд между подходами.'
+    },
+    30: {
+      tag: 'Средняя нагрузка', title: 'Полноценная тренировка',
+      muscles: ['Всё тело', 'Кор', 'Ноги', 'Верх'],
+      exercises: [
+        { name: 'Суставная разминка', detail: '4 мин', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Прыжки Джека', detail: '3×40 сек', icon: '⬆️', noBack: false, noKnee: true },
+        { name: 'Приседания', detail: '4×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Отжимания', detail: '4×15', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Выпады', detail: '3×12 на ногу', icon: '🦶', noBack: false, noKnee: true },
+        { name: 'Планка', detail: '3×1 мин', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Скручивания', detail: '3×25', icon: '💫', noBack: true, noKnee: false },
+      ],
+      pulseRange: [125, 150], tip: 'Хорошее самочувствие + 30 минут = полноценная тренировка. Финальные 5 минут посвяти растяжке.'
+    },
+    60: {
+      tag: 'Средняя нагрузка', title: 'Час силы и баланса',
+      muscles: ['Всё тело', 'Кор', 'Ноги', 'Верх', 'Гибкость'],
+      exercises: [
+        { name: 'Суставная разминка', detail: '7 мин полный круг', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Кардио-активация (прыжки Джека)', detail: '5×40 сек, отдых 20 сек', icon: '⬆️', noBack: false, noKnee: true },
+        { name: 'Приседания', detail: '5×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Отжимания', detail: '5×15', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Выпады с шагом', detail: '4×12 на ногу', icon: '🦶', noBack: false, noKnee: true },
+        { name: 'Планка', detail: '4×1 мин', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Скручивания велосипед', detail: '4×30', icon: '🚲', noBack: true, noKnee: false },
+        { name: 'Ягодичный мостик', detail: '4×20', icon: '🌉', noBack: false, noKnee: false },
+        { name: 'Растяжка всего тела', detail: '10 мин', icon: '🧘', noBack: false, noKnee: false },
+      ],
+      pulseRange: [120, 150], tip: 'Час тренировки при среднем самочувствии — отлично! Чередуй силовые блоки и кардио каждые 10 минут, чтобы не перегружать одну группу мышц.'
+    },
+  },
+  high: {
+    5: {
+      tag: 'Высокая интенсивность', title: 'Турбо-заряд',
+      muscles: ['Всё тело', 'Сердце', 'Ноги'],
+      exercises: [
+        { name: 'Бёрпи', detail: '3×10 без остановки', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Прыжки Джека', detail: '1×60 сек', icon: '⬆️', noBack: false, noKnee: true },
+        { name: 'Спринт на месте', detail: '2×30 сек', icon: '🏃', noBack: false, noKnee: true },
+      ],
+      pulseRange: [140, 170], tip: 'Отличное самочувствие + 5 минут = максимальная интенсивность! Это кардио-взрыв. Выкладывайся полностью, отдыха почти нет.'
+    },
+    10: {
+      tag: 'Высокая интенсивность', title: 'HIIT-спринт',
+      muscles: ['Всё тело', 'Сердце', 'Ноги', 'Кор'],
+      exercises: [
+        { name: 'Бёрпи', detail: '3×12', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Отжимания широким хватом', detail: '3×15', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Прыжковые приседания', detail: '3×15', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Планка с чередованием рук', detail: '3×30 сек', icon: '🔒', noBack: true, noKnee: false },
+      ],
+      pulseRange: [145, 175], tip: 'Ты в отличной форме сегодня! HIIT в 10 минут даст эффект 40-минутной кардиотренировки. Отдых между раундами — 20 сек.'
+    },
+    15: {
+      tag: 'Высокая интенсивность', title: 'Силовой HIIT',
+      muscles: ['Всё тело', 'Кор', 'Ноги', 'Грудь'],
+      exercises: [
+        { name: 'Бёрпи', detail: '3×15', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Отжимания с хлопком', detail: '3×10', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Прыжковые приседания', detail: '3×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Горная тропа', detail: '3×40 сек', icon: '🏃', noBack: true, noKnee: true },
+        { name: 'Планка с поочерёдным подъёмом ног', detail: '3×30 сек', icon: '🔒', noBack: true, noKnee: false },
+      ],
+      pulseRange: [150, 180], tip: 'Высокое самочувствие = время жечь! Держи темп высоким, но следи за техникой — качество важнее скорости.'
+    },
+    20: {
+      tag: 'Высокая интенсивность', title: 'Полный HIIT',
+      muscles: ['Всё тело', 'Сердце', 'Ноги', 'Верх'],
+      exercises: [
+        { name: 'Разминка-активация', detail: '2 мин прыжки + вращения', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Бёрпи', detail: '4×15', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Отжимания с хлопком', detail: '3×12', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Прыжковые приседания', detail: '4×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Горная тропа', detail: '3×45 сек', icon: '🏃', noBack: true, noKnee: true },
+        { name: 'Скручивания с касанием', detail: '3×20', icon: '💫', noBack: true, noKnee: false },
+      ],
+      pulseRange: [155, 185], tip: 'Сегодня твой день! 20 минут высокой интенсивности дадут заряд на весь день. Следи за пульсом — целевая зона 150–175 уд/мин.'
+    },
+    30: {
+      tag: 'Максимум', title: 'Комплекс атлета',
+      muscles: ['Всё тело', 'Кардио', 'Сила', 'Выносливость'],
+      exercises: [
+        { name: 'Активная разминка', detail: '4 мин: прыжки, вращения, шаги', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Бёрпи', detail: '5×15', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Отжимания на трицепс', detail: '4×15', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Прыжковые приседания', detail: '4×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Горная тропа', detail: '4×1 мин', icon: '🏃', noBack: true, noKnee: true },
+        { name: 'Планка с подъёмом', detail: '3×1 мин', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Скручивания велосипед', detail: '4×30', icon: '💫', noBack: true, noKnee: false },
+        { name: 'Заминка', detail: '5 мин растяжка', icon: '🧘', noBack: false, noKnee: false },
+      ],
+      pulseRange: [160, 190], tip: 'Идеальное самочувствие + 30 минут = максимальная результативность. Не пропускай заминку — это залог восстановления!'
+    },
+    60: {
+      tag: 'Элитный уровень', title: 'Час чемпиона',
+      muscles: ['Всё тело', 'Кардио', 'Сила', 'Выносливость', 'Кор'],
+      exercises: [
+        { name: 'Динамическая разминка', detail: '8 мин: бег на месте, вращения, растяжка в движении', icon: '🔄', noBack: false, noKnee: false },
+        { name: 'Бёрпи (раунд 1)', detail: '4×15, отдых 15 сек', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Отжимания с хлопком', detail: '4×12', icon: '💪', noBack: true, noKnee: false },
+        { name: 'Прыжковые приседания', detail: '4×20', icon: '🦵', noBack: false, noKnee: true },
+        { name: 'Горная тропа', detail: '4×1 мин', icon: '🏃', noBack: true, noKnee: true },
+        { name: 'Болгарские сплит-приседания', detail: '3×12 на ногу', icon: '🇧🇬', noBack: false, noKnee: true },
+        { name: 'Бёрпи (раунд 2)', detail: '3×15, темп максимальный', icon: '🔥', noBack: true, noKnee: true },
+        { name: 'Планка с подъёмом рук/ног', detail: '4×1 мин', icon: '🔒', noBack: true, noKnee: false },
+        { name: 'Скручивания велосипед', detail: '4×30', icon: '🚲', noBack: true, noKnee: false },
+        { name: 'Спринт на месте', detail: '5×30 сек, отдых 15 сек', icon: '💨', noBack: false, noKnee: true },
+        { name: 'Заминка и растяжка', detail: '8 мин полного тела', icon: '🧘', noBack: false, noKnee: false },
+      ],
+      pulseRange: [165, 195], tip: 'Час при отличном самочувствии — это профессиональная тренировка. Следи за пульсом: максимум 85–90% от МЧСС. Обязательно пей воду каждые 15 минут!'
+    },
+  }
+};
+
+// ─── MUSCLE EXERCISES DATABASE ───────────────────────────────────
+// Each exercise: { name, detail, icon, noBack, noKnee, intensity: 'low'|'mid'|'high', groups: [...] }
+const MUSCLE_EXERCISES = {
+  chest: [
+    { name: 'Отжимания классические', detail: '3×12', icon: '💪', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Отжимания широким хватом', detail: '3×15', icon: '💪', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Отжимания с хлопком', detail: '3×10', icon: '🔥', noBack: true, noKnee: false, intensity: 'high' },
+    { name: 'Отжимания от стены', detail: '3×20', icon: '🤲', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Отжимания узким хватом', detail: '3×12', icon: '💪', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Отжимания с паузой', detail: '3×8, 3 сек удержание', icon: '⏸️', noBack: true, noKnee: false, intensity: 'mid' },
+  ],
+  back: [
+    { name: 'Супермен', detail: '3×15', icon: '🦸', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Тяга в наклоне (имитация)', detail: '3×15 на руку', icon: '🏋️', noBack: false, noKnee: false, intensity: 'mid' },
+    { name: 'Обратные гиперэкстензии', detail: '3×15', icon: '🔼', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Подтягивания (без турника: тяга полотенца)', detail: '3×12', icon: '⬆️', noBack: false, noKnee: false, intensity: 'mid' },
+    { name: 'Кошка-корова', detail: '3×15', icon: '🐱', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Лодочка', detail: '3×15, 2 сек удержание', icon: '🚣', noBack: false, noKnee: false, intensity: 'mid' },
+  ],
+  shoulders: [
+    { name: 'Жим от пола (с поворотом)', detail: '3×12', icon: '🔱', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Разведение рук в стороны (пики)', detail: '3×15', icon: '✋', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Отжимания «пика»', detail: '3×12', icon: '🏔️', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Круговые вращения руками', detail: '3×30 сек', icon: '🔄', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Стойка на руках у стены', detail: '3×20 сек', icon: '🤸', noBack: true, noKnee: false, intensity: 'high' },
+  ],
+  arms: [
+    { name: 'Обратные отжимания от стула', detail: '3×15', icon: '🪑', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Отжимания узким хватом (трицепс)', detail: '3×12', icon: '💪', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Сгибания рук с бутылками воды', detail: '3×15', icon: '💧', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Изометрическое удержание угла', detail: '3×30 сек', icon: '⏱️', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Алмазные отжимания', detail: '3×10', icon: '💎', noBack: true, noKnee: false, intensity: 'high' },
+  ],
+  core: [
+    { name: 'Планка на локтях', detail: '3×45 сек', icon: '🔒', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Скручивания', detail: '3×20', icon: '💫', noBack: true, noKnee: false, intensity: 'low' },
+    { name: 'Велосипед', detail: '3×30', icon: '🚲', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Подъём ног лёжа', detail: '3×15', icon: '⬆️', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Боковая планка', detail: '3×30 сек на сторону', icon: '📐', noBack: true, noKnee: false, intensity: 'mid' },
+    { name: 'Горная тропа', detail: '3×40 сек', icon: '🏃', noBack: true, noKnee: true, intensity: 'high' },
+    { name: 'Вакуум живота', detail: '5×10 сек удержание', icon: '🌀', noBack: false, noKnee: false, intensity: 'low' },
+  ],
+  glutes: [
+    { name: 'Ягодичный мостик', detail: '3×20', icon: '🌉', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Ягодичный мостик на одной ноге', detail: '3×15 на ногу', icon: '🔺', noBack: false, noKnee: false, intensity: 'mid' },
+    { name: 'Приседания-сумо', detail: '3×20', icon: '🦵', noBack: false, noKnee: true, intensity: 'mid' },
+    { name: 'Отведение ноги в сторону лёжа', detail: '3×20 на сторону', icon: '↔️', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Пожарный гидрант', detail: '3×15 на ногу', icon: '🐕', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Прыжковый ягодичный мостик', detail: '3×15', icon: '🔥', noBack: false, noKnee: true, intensity: 'high' },
+  ],
+  legs: [
+    { name: 'Приседания', detail: '3×20', icon: '🦵', noBack: false, noKnee: true, intensity: 'mid' },
+    { name: 'Выпады на месте', detail: '3×12 на ногу', icon: '🦶', noBack: false, noKnee: true, intensity: 'mid' },
+    { name: 'Болгарские сплит-приседания', detail: '3×10 на ногу', icon: '🇧🇬', noBack: false, noKnee: true, intensity: 'high' },
+    { name: 'Приседания-сумо', detail: '3×20', icon: '🏋️', noBack: false, noKnee: true, intensity: 'mid' },
+    { name: 'Прыжковые приседания', detail: '3×15', icon: '🚀', noBack: false, noKnee: true, intensity: 'high' },
+    { name: 'Зашагивания на стул', detail: '3×12 на ногу', icon: '🪑', noBack: false, noKnee: true, intensity: 'mid' },
+    { name: 'Стульчик у стены', detail: '3×45 сек', icon: '💺', noBack: true, noKnee: true, intensity: 'mid' },
+  ],
+  calves: [
+    { name: 'Подъём на носки стоя', detail: '3×25', icon: '⬆️', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Подъём на носки на одной ноге', detail: '3×20 на ногу', icon: '🦶', noBack: false, noKnee: false, intensity: 'mid' },
+    { name: 'Прыжки через скакалку (без скакалки)', detail: '3×40 сек', icon: '⏭️', noBack: false, noKnee: true, intensity: 'high' },
+    { name: 'Ходьба на носках', detail: '2×1 мин', icon: '🚶', noBack: false, noKnee: false, intensity: 'low' },
+    { name: 'Прыжки на месте', detail: '3×30 сек', icon: '🏃', noBack: false, noKnee: true, intensity: 'mid' },
+  ],
+};
+
+// ─── STATE ───────────────────────────────────────────────────────
+let selectedTime = 15;
+let feelingValue = 7;
+let selectedMuscleGroups = new Set();
+
+// ─── INIT ────────────────────────────────────────────────────────
+function init() {
+  buildScaleBars();
+  updateFeelingUI(7);
+  updateSliderTrack(7);
+
+  document.getElementById('feeling-slider').addEventListener('input', function() {
+    feelingValue = parseInt(this.value);
+    updateFeelingUI(feelingValue);
+    updateSliderTrack(feelingValue);
+  });
+
+  document.querySelectorAll('.time-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.time-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      selectedTime = parseInt(this.dataset.minutes);
+    });
+  });
+
+  // Muscle group rows
+  document.querySelectorAll('.muscle-group-row').forEach(row => {
+    row.addEventListener('click', function() {
+      const group = this.dataset.group;
+      toggleMuscleGroup(group);
+    });
+  });
+
+  // SVG body zones
+  document.querySelectorAll('.body-zone').forEach(zone => {
+    zone.addEventListener('click', function() {
+      const group = this.dataset.group;
+      toggleMuscleGroup(group);
+    });
+  });
+
+  // Clear button
+  document.getElementById('mg-clear-btn').addEventListener('click', function() {
+    selectedMuscleGroups.clear();
+    updateMuscleUI();
+  });
+
+  document.getElementById('generate-btn').addEventListener('click', generateWorkout);
+
+  renderHistory();
+}
+
+function toggleMuscleGroup(group) {
+  if (selectedMuscleGroups.has(group)) {
+    selectedMuscleGroups.delete(group);
+  } else {
+    selectedMuscleGroups.add(group);
+  }
+  updateMuscleUI();
+}
+
+function updateMuscleUI() {
+  // Update rows
+  document.querySelectorAll('.muscle-group-row').forEach(row => {
+    const group = row.dataset.group;
+    if (selectedMuscleGroups.has(group)) {
+      row.classList.add('mg-active');
+    } else {
+      row.classList.remove('mg-active');
+    }
+  });
+
+  // Update SVG zones — find all zones for the group
+  document.querySelectorAll('.body-zone').forEach(zone => {
+    const group = zone.dataset.group;
+    if (selectedMuscleGroups.has(group)) {
+      zone.classList.add('zone-active');
+    } else {
+      zone.classList.remove('zone-active');
+    }
+  });
+}
+
+function buildScaleBars() {
+  const scale = document.getElementById('feeling-scale');
+  scale.innerHTML = '';
+  for (let i = 1; i <= 10; i++) {
+    const bar = document.createElement('div');
+    bar.className = 'feeling-scale-bar';
+    bar.id = 'bar-' + i;
+    scale.appendChild(bar);
+  }
+}
+
+function updateFeelingUI(val) {
+  const f = FEELINGS[val];
+  const numEl = document.getElementById('feeling-num');
+  const labelEl = document.getElementById('feeling-label');
+  const descEl = document.getElementById('feeling-desc');
+
+  numEl.textContent = val;
+  numEl.style.color = f.color;
+  numEl.style.textShadow = `0 0 30px ${f.color}80`;
+  labelEl.textContent = f.label;
+  descEl.textContent = f.desc;
+
+  for (let i = 1; i <= 10; i++) {
+    const bar = document.getElementById('bar-' + i);
+    bar.className = 'feeling-scale-bar';
+    if (i <= val) {
+      if (val <= 3) bar.classList.add('low-active');
+      else if (val <= 6) bar.classList.add('mid-active');
+      else bar.classList.add('active');
+    }
+  }
+}
+
+function updateSliderTrack(val) {
+  const slider = document.getElementById('feeling-slider');
+  const pct = (val - 1) / 9 * 100;
+  let color = '#39ff14';
+  if (val <= 3) color = '#ff4545';
+  else if (val <= 6) color = '#ffa545';
+  slider.style.background = `linear-gradient(90deg, ${color} ${pct}%, #252928 ${pct}%)`;
+}
+
+// ─── GENERATE ────────────────────────────────────────────────────
+function generateWorkout() {
+  const feeling = feelingValue;
+  const time = selectedTime;
+  const noBack = document.getElementById('opt-back').checked;
+  const noKnee = document.getElementById('opt-knee').checked;
+  const noEquip = document.getElementById('opt-noequip').checked;
+  const withEquip = document.getElementById('opt-equip').checked;
+  const morningOnly = document.getElementById('opt-morning').checked;
+  const cardioFocus = document.getElementById('opt-cardio').checked;
+  const targetGroups = Array.from(selectedMuscleGroups);
+
+  // Determine band
+  let band;
+  if (feeling <= 3) band = 'low';
+  else if (feeling <= 6) band = 'mid';
+  else band = 'high';
+
+  const effectiveBand = morningOnly ? 'low' : band;
+
+  // Find closest time key
+  const timeKeys = [10, 15, 20, 30, 60];
+  const timeKey = timeKeys.reduce((a, b) => Math.abs(b - time) < Math.abs(a - time) ? b : a);
+
+  let workout = JSON.parse(JSON.stringify(WORKOUTS[effectiveBand][timeKey]));
+
+  // ── Кардио-фокус: если выбрано «Упор на кардио», заменяем часть упражнений ──
+  if (cardioFocus) {
+    const cardioExercises = [
+      { name: 'Прыжки Джека', detail: '4×45 сек', icon: '⬆️', noBack: false, noKnee: true },
+      { name: 'Бег на месте с высоким коленом', detail: '4×1 мин', icon: '🏃', noBack: false, noKnee: true },
+      { name: 'Скиппинг (бег на месте быстро)', detail: '3×30 сек', icon: '💨', noBack: false, noKnee: true },
+      { name: 'Прыжки в сторону', detail: '3×40 сек', icon: '↔️', noBack: false, noKnee: true },
+      { name: 'Бёрпи (кардио темп)', detail: '3×12', icon: '🔥', noBack: true, noKnee: true },
+      { name: 'Прыжки со сменой ног', detail: '3×30 сек', icon: '🦘', noBack: false, noKnee: true },
+    ];
+    // Filter by constraints
+    const allowed = cardioExercises.filter(ex => !(noKnee && ex.noKnee) && !(noBack && ex.noBack));
+    // Replace half the exercises with cardio ones
+    const keep = workout.exercises.slice(0, Math.ceil(workout.exercises.length / 2));
+    workout.exercises = [...keep, ...allowed.slice(0, Math.floor(workout.exercises.length / 2))];
+    workout.tag = 'Кардио-акцент';
+    workout.title = 'Кардио-' + workout.title;
+    workout.muscles = ['Сердце', 'Лёгкие', ...workout.muscles.slice(0, 2)];
+    workout.tip = 'Кардио-режим активирован! Целевая зона пульса — 65–85% от максимума. ' + workout.tip;
+  }
+
+  // ── С инвентарём: заменяем/добавляем упражнения с гантелями ──
+  if (withEquip && !noEquip) {
+    const equipExercises = [
+      { name: 'Жим гантелей лёжа', detail: '4×12', icon: '🏋️', noBack: true, noKnee: false },
+      { name: 'Тяга гантели в наклоне', detail: '4×12 на руку', icon: '🏋️', noBack: false, noKnee: false },
+      { name: 'Жим гантелей сидя (плечи)', detail: '3×12', icon: '💪', noBack: true, noKnee: false },
+      { name: 'Сгибания рук с гантелями (бицепс)', detail: '3×15', icon: '💪', noBack: false, noKnee: false },
+      { name: 'Разгибания с гантелью (трицепс)', detail: '3×15', icon: '💪', noBack: false, noKnee: false },
+      { name: 'Приседания с гантелями', detail: '4×15', icon: '🦵', noBack: false, noKnee: true },
+      { name: 'Тяга гантелей к поясу', detail: '4×12', icon: '🏋️', noBack: false, noKnee: false },
+      { name: 'Румынская тяга с гантелями', detail: '4×12', icon: '🏋️', noBack: false, noKnee: false },
+      { name: 'Разведение гантелей (грудь)', detail: '3×12', icon: '🔱', noBack: true, noKnee: false },
+      { name: 'Тяга резинки (спина)', detail: '4×15', icon: '🎯', noBack: false, noKnee: false },
+    ];
+    const allowed = equipExercises.filter(ex => !(noKnee && ex.noKnee) && !(noBack && ex.noBack));
+    // Replace non-warmup exercises with equipment variants
+    const warmupEx = workout.exercises.filter(ex => ex.icon === '🔄' || ex.name.toLowerCase().includes('разминка'));
+    const pickCount = Math.min(allowed.length, Math.max(3, workout.exercises.length - warmupEx.length));
+    workout.exercises = [...warmupEx, ...allowed.slice(0, pickCount)];
+    workout.tag = 'С инвентарём';
+    workout.muscles = ['Всё тело (с отягощением)', ...workout.muscles.slice(0, 2)];
+    workout.tip = 'Тренировка с инвентарём! Подбери гантели так, чтобы последние 2–3 повторения давались с усилием, но без потери техники. ' + workout.tip;
+  }
+
+  // ── If muscle groups are selected, blend in targeted exercises ──
+  if (targetGroups.length > 0) {
+    // Collect targeted exercises
+    let targeted = [];
+    targetGroups.forEach(group => {
+      const pool = (MUSCLE_EXERCISES[group] || []).filter(ex => {
+        if (noBack && ex.noBack) return false;
+        if (noKnee && ex.noKnee) return false;
+        // Match intensity to band
+        if (effectiveBand === 'low' && ex.intensity === 'high') return false;
+        if (effectiveBand === 'high' && ex.intensity === 'low' && feeling >= 8) return false;
+        return true;
+      });
+      // Pick 1–2 per group depending on time
+      const pick = time <= 10 ? 1 : time <= 20 ? 2 : 3;
+      const shuffled = pool.sort(() => Math.random() - 0.5);
+      targeted.push(...shuffled.slice(0, pick));
+    });
+
+    // Deduplicate by name
+    const seen = new Set();
+    targeted = targeted.filter(ex => {
+      if (seen.has(ex.name)) return false;
+      seen.add(ex.name); return true;
+    });
+
+    // Keep base warm-up if present (first item with no noBack/noKnee flags is usually warmup)
+    const warmup = workout.exercises.find(ex => ex.icon === '🔄' || ex.name.includes('разминка') || ex.name.includes('Разминка'));
+
+    // Decide how many base exercises to keep alongside targeted
+    const baseKeep = time <= 10 ? 0 : time <= 20 ? 1 : 2;
+    let baseExercises = workout.exercises.filter(ex => {
+      if (noBack && ex.noBack) return false;
+      if (noKnee && ex.noKnee) return false;
+      return true;
+    }).slice(0, baseKeep);
+
+    // Assemble final list
+    let finalExercises = [];
+    if (warmup) finalExercises.push(warmup);
+    finalExercises.push(...targeted);
+    // Add base exercises not already in targeted
+    baseExercises.forEach(ex => {
+      if (!finalExercises.find(e => e.name === ex.name)) finalExercises.push(ex);
+    });
+
+    if (finalExercises.length === 0) {
+      finalExercises = [{ name: 'Дыхательная гимнастика', detail: '5 мин', icon: '🌬️', noBack: false, noKnee: false }];
+    }
+
+    workout.exercises = finalExercises;
+
+    // Update muscles list in workout to reflect targeted groups
+    const groupNames = {
+      chest: 'Грудь', back: 'Спина', shoulders: 'Плечи', arms: 'Руки',
+      core: 'Пресс и кор', glutes: 'Ягодицы', legs: 'Ноги', calves: 'Икры'
+    };
+    workout.muscles = targetGroups.map(g => groupNames[g] || g);
+
+    // Amend tip with muscle focus note
+    const groupLabels = targetGroups.map(g => groupNames[g]).join(', ');
+    workout.tip = `Акцент на: <strong>${groupLabels}</strong>. ` + workout.tip;
+
+    // Amend title
+    if (targetGroups.length === 1) {
+      const titleMap = {
+        chest: 'Прокачка груди', back: 'Сильная спина', shoulders: 'Широкие плечи',
+        arms: 'Рельеф рук', core: 'Стальной пресс', glutes: 'Упругие ягодицы',
+        legs: 'Мощные ноги', calves: 'Рельефные икры'
+      };
+      workout.title = titleMap[targetGroups[0]] || workout.title;
+    } else if (targetGroups.length === 2) {
+      workout.title = 'Целевой суперсет';
+    } else {
+      workout.title = 'Комплекс по целям';
+    }
+  } else {
+    // No muscle groups selected — use default filter
+    workout.exercises = workout.exercises.filter(ex => {
+      if (noBack && ex.noBack) return false;
+      if (noKnee && ex.noKnee) return false;
+      return true;
+    });
+
+    if (workout.exercises.length === 0) {
+      workout.exercises = [{ name: 'Дыхательная гимнастика', detail: '5 мин глубокого дыхания', icon: '🌬️' }];
+    }
+  }
+
+  // Difficulty
+  const diffMap = { low: 2, mid: 5, high: 8 };
+  let diff = diffMap[effectiveBand];
+  if (time >= 20) diff = Math.min(10, diff + 1);
+  if (time >= 30) diff = Math.min(10, diff + 1);
+  if (feeling >= 9) diff = Math.min(10, diff + 1);
+
+  // Pulse
+  const [pMin, pMax] = workout.pulseRange;
+  const pulseDisplay = `${pMin}–${pMax}`;
+
+  // Build tip
+  let tip = workout.tip;
+  if (morningOnly) tip = 'Утренняя разминка — лучший способ запустить метаболизм. Выполняй упражнения медленно, давая телу проснуться. ' + tip;
+
+  // Render
+  document.getElementById('res-tag').textContent = workout.tag;
+  document.getElementById('res-title').textContent = workout.title;
+  document.getElementById('res-time').textContent = time;
+  document.getElementById('res-pulse').textContent = pulseDisplay;
+  document.getElementById('res-diff').textContent = diff;
+
+  const diffBar = document.getElementById('res-diff-bar');
+  setTimeout(() => { diffBar.style.width = (diff * 10) + '%'; }, 100);
+
+  // Muscle group chips in meta
+  const groupNames2 = {
+    chest: 'Грудь', back: 'Спина', shoulders: 'Плечи', arms: 'Руки',
+    core: 'Пресс', glutes: 'Ягодицы', legs: 'Ноги', calves: 'Икры'
+  };
+  const muscleChip = targetGroups.length > 0
+    ? `<div class="meta-chip"><span class="icon">🎯</span>${targetGroups.map(g => groupNames2[g]).join(', ')}</div>`
+    : '';
+
+  const meta = document.getElementById('res-meta');
+  meta.innerHTML = `
+    <div class="meta-chip"><span class="icon">⏱</span>${time} мин</div>
+    <div class="meta-chip"><span class="icon">💓</span>${pulseDisplay} уд/мин</div>
+    <div class="meta-chip"><span class="icon">⭐</span>Самочувствие: ${feeling}/10</div>
+    ${muscleChip}
+  `;
+
+  // Muscles
+  const musclesEl = document.getElementById('res-muscles');
+  musclesEl.innerHTML = workout.muscles.map(m => `<span class="muscle-tag">${m}</span>`).join('');
+
+  // Exercises
+  const exEl = document.getElementById('res-exercises');
+  exEl.innerHTML = workout.exercises.map((ex, i) => `
+    <div class="exercise-item">
+      <div class="exercise-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="exercise-info">
+        <div class="exercise-name">${ex.name}</div>
+        <div class="exercise-detail">${ex.detail}</div>
+      </div>
+      <div class="exercise-icon">${ex.icon}</div>
+    </div>
+  `).join('');
+
+  // Tip
+  document.getElementById('res-tip').innerHTML = tip;
+
+  // Show
+  const resultSection = document.getElementById('result-section');
+  resultSection.style.display = 'block';
+  resultSection.style.animation = 'none';
+  resultSection.offsetHeight;
+  resultSection.style.animation = '';
+
+  setTimeout(() => {
+    resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+
+  // Save history
+  const muscleLabel = targetGroups.length > 0
+    ? targetGroups.map(g => groupNames2[g]).join(', ')
+    : 'Сбалансировано';
+
+  saveHistory({
+    title: workout.title,
+    tag: workout.tag,
+    time: time,
+    feeling: feeling,
+    muscles: muscleLabel,
+    date: new Date()
+  });
+}
+
+// ─── HISTORY ─────────────────────────────────────────────────────
+function saveHistory(entry) {
+  let history = [];
+  try {
+    history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+  } catch(e) {}
+
+  const dateStr = entry.date instanceof Date ? entry.date.toISOString() : entry.date;
+  history.unshift({ ...entry, date: dateStr });
+  history = history.slice(0, 3);
+
+  try {
+    localStorage.setItem('workout_history', JSON.stringify(history));
+  } catch(e) {}
+
+  renderHistory();
+}
+
+function renderHistory() {
+  let history = [];
+  try {
+    history = JSON.parse(localStorage.getItem('workout_history') || '[]');
+  } catch(e) {}
+
+  const listEl = document.getElementById('history-list');
+
+  if (history.length === 0) {
+    listEl.innerHTML = '<div class="history-empty">История пуста — проведи первую тренировку! 💪</div>';
+    return;
+  }
+
+  listEl.innerHTML = history.map(entry => {
+    const date = new Date(entry.date);
+    const day = date.toLocaleDateString('ru', { day: '2-digit', month: 'short' });
+    const time = date.toLocaleTimeString('ru', { hour: '2-digit', minute: '2-digit' });
+    return `
+      <div class="history-item">
+        <div class="history-date">${day}<br>${time}</div>
+        <div class="history-sep"></div>
+        <div class="history-info">
+          <div class="history-name">${entry.title}</div>
+          <div class="history-meta">${entry.tag} · ${entry.muscles || 'Сбалансировано'} · самочувствие ${entry.feeling}/10</div>
+        </div>
+        <div class="history-badge">${entry.time} мин</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── START ───────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
